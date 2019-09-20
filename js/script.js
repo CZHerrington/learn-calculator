@@ -34,40 +34,52 @@ function addOp(op) {
 }
 
 function calculate() {
-    console.log(buffer.join(''));
-    // RegExes
-    let opReg = /[\+\-\*\/]/g;
+    let sBuffer = buffer.join('');
+    console.log('buffer: ', buffer);
+    let opReg = /[\+|\-|\*|\/]/g;
     let numReg = /[0-9|\.]/g;
-    // let ops = opReg.exec(buffer);
+    let ops = sBuffer.split(numReg).filter(a => a !== "");
+    let operands = sBuffer.split(opReg).map((val) => Number(val));
 
-     // splits buffer into strings of numbers on operands
-    let ops = buffer.join('').split(numReg).join('').split(' ').join('').split('')
-    let operands = buffer.join('').split(opReg);
-    console.log('ops', ops, 'operands', operands);
-
-    // generate solution
-    // todo: respect OOO!
-    let solution = operands.reduce((acc, num, operationIndex) => {
-        console.log(acc, num, operationIndex)
-        switch (ops[operationIndex - 1]) {
-            case '+':
-                return Number(acc) + Number(num);
-                break;
-            case '-':
-                return Number(acc) - Number(num);
-                break;
-            case '*':
-                return Number(acc) * Number(num);
-                break;
-            case '/':
-                return Number(acc) / Number(num);
-            default:
-                return "you messed up, son"
-                break;
+    function singleOperation(o, n, sym) {
+        if (ops.indexOf(sym) !== -1) {
+            let pOp = o.indexOf(sym);
+            let res = (n[pOp] * n[pOp + 1])
+            o.splice(pOp, 1)
+            n.splice(pOp, 2, res);
         }
-    });
-    input.innerHTML = solution;
+    }
+    for (let i = 0; i <= ops.length; i++) {
+        // complete each operation on operands while respecting pemdas
+        // todo: reduce the four blocks of similar code into an abstracted fxn
+        if (ops.indexOf('*') !== -1) {
+            let pOp = ops.indexOf('*');
+            let res = (operands[pOp] * operands[pOp + 1])
+            ops.splice(pOp, 1)
+            operands.splice(pOp, 2, res);
+        }
+        else if (ops.indexOf('/') !== -1) {
+            let pOp = ops.indexOf('/');
+            let res = (operands[pOp] / operands[pOp + 1])
+            ops.splice(pOp, 1)
+            operands.splice(pOp, 2, res);
+        }
+        else if (ops.indexOf('+') !== -1) {
+            let pOp = ops.indexOf('+');
+            let res = (operands[pOp] + operands[pOp + 1])
+            ops.splice(pOp, 1)
+            operands.splice(pOp, 2, res);
+        }
+        else if (ops.indexOf('-') !== -1) {
+            let pOp = ops.indexOf('-');
+            let res = (operands[pOp] - operands[pOp + 1])
+            ops.splice(pOp, 1)
+            operands.splice(pOp, 2, res);
+        }
+    }
+    return operands[0];
 }
+
 
 // numbers is a NodeList object, we need to make it into an array first, then we can map through it...
 numbers.forEach(
@@ -90,6 +102,6 @@ operators.forEach(
 )
 // on click of 'equal' button, perform the mathematical operation
 result.addEventListener('click', (e) => {
-    calculate();
+    input.innerHTML = calculate();
 })
 // clear the input on press of clear
