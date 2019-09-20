@@ -11,7 +11,7 @@ let resultDisplayed = false; // flag to keep an eye on what output is displayed
 let buffer = [];
 let operatorStrings = ['+', '-', '*', '/'];
 
-let updateDisplay = () => {
+let updateDisplayFromBuffer = () => {
     input.innerHTML = buffer.join(' ');
 }
 
@@ -21,7 +21,7 @@ function addNumber(n) {
     } else {
         buffer.push(n);
     }
-    updateDisplay();
+    updateDisplayFromBuffer();
 }
 
 function addOp(op) {
@@ -30,14 +30,14 @@ function addOp(op) {
     } else {
         buffer.push(op);
     }
-    updateDisplay();
+    updateDisplayFromBuffer();
 }
 
 function calculate() {
     console.log(buffer.join(''));
     // RegExes
     let opReg = /[\+\-\*\/]/g;
-    let numReg = /[0-9]/g;
+    let numReg = /[0-9|\.]/g;
     // let ops = opReg.exec(buffer);
 
      // splits buffer into strings of numbers on operands
