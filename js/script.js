@@ -8,10 +8,10 @@ const input = document.getElementById("input"), // input/output button
 
 let resultDisplayed = false; // flag to keep an eye on what output is displayed
 
-let buffer = []
-let operatorStrings = ['+', '-', '*', '/']
+let buffer = [];
+let operatorStrings = ['+', '-', '*', '/'];
 
-function update() {
+let updateDisplay = () => {
     input.innerHTML = buffer.join(' ');
 }
 
@@ -21,7 +21,7 @@ function addNumber(n) {
     } else {
         buffer.push(n);
     }
-    update();
+    updateDisplay();
 }
 
 function addOp(op) {
@@ -30,8 +30,45 @@ function addOp(op) {
     } else {
         buffer.push(op);
     }
-    update();
+    updateDisplay();
 }
+
+function calculate() {
+    console.log(buffer.join(''));
+    // RegExes
+    let opReg = /[\+\-\*\/]/g;
+    let numReg = /[0-9]/g;
+    // let ops = opReg.exec(buffer);
+
+     // splits buffer into strings of numbers on operands
+    let ops = buffer.join('').split(numReg).join('').split(' ').join('').split('')
+    let operands = buffer.join('').split(opReg);
+    console.log('ops', ops, 'operands', operands);
+
+    // generate solution
+    // todo: respect OOO!
+    let solution = operands.reduce((acc, num, operationIndex) => {
+        console.log(acc, num, operationIndex)
+        switch (ops[operationIndex - 1]) {
+            case '+':
+                return Number(acc) + Number(num);
+                break;
+            case '-':
+                return Number(acc) - Number(num);
+                break;
+            case '*':
+                return Number(acc) * Number(num);
+                break;
+            case '/':
+                return Number(acc) / Number(num);
+            default:
+                return "you messed up, son"
+                break;
+        }
+    });
+    input.innerHTML = solution;
+}
+
 // numbers is a NodeList object, we need to make it into an array first, then we can map through it...
 numbers.forEach(
     (number) => {
@@ -52,5 +89,7 @@ operators.forEach(
     }
 )
 // on click of 'equal' button, perform the mathematical operation
-
+result.addEventListener('click', (e) => {
+    calculate();
+})
 // clear the input on press of clear
