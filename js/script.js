@@ -44,7 +44,7 @@ function calculate() {
     function singleOperation(o, n, sym) {
         if (ops.indexOf(sym) !== -1) {
             let pOp = o.indexOf(sym);
-            let res = (n[pOp] * n[pOp + 1])
+            let res = (n[pOp] /* how to operate on this? need conditional still */ * n[pOp + 1])
             o.splice(pOp, 1)
             n.splice(pOp, 2, res);
         }
